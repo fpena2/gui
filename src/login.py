@@ -1,6 +1,7 @@
 from PyQt5 import QtWidgets, QtGui
 from PyQt5 import QtCore
 from PyQt5.QtCore import QDateTime, Qt, QTimer
+from accountHandle import createUser
 
 class WindowMain(QtWidgets.QMainWindow):
     def __init__(self, parent=None):
@@ -43,6 +44,8 @@ class windowCreateAccount(QtWidgets.QWidget):
         # Accessed by multiple functions
         self.nameID = QtWidgets.QLineEdit()
         self.password = QtWidgets.QLineEdit()
+        # Hides password field
+        self.password.setEchoMode(QtWidgets.QLineEdit.Password) 
         self.comboBox = QtWidgets.QComboBox()
 
         self.InitCreateAccount()
@@ -71,9 +74,11 @@ class windowCreateAccount(QtWidgets.QWidget):
         self.show()
 
     def submitHandler(self):
-        print(self.nameID.text())
-        print(self.password.text())
-        print(str(self.comboBox.currentText()))
+        dataPacket = (self.nameID.text(), self.password.text(),str(self.comboBox.currentText()))
+
+        handle = createUser()
+        handle.pushDatabase(dataPacket)
+
 
 
 if __name__ == '__main__':
@@ -90,26 +95,6 @@ if __name__ == '__main__':
     #     window.show()
     #     sys.exit(app.exec_())
 
-  
-'''
-    # def loginScreen(self):
-
-    #     #self.buttonLogin = QtWidgets.QPushButton('Login', self)
-    #     #self.buttonLogin.clicked.connect(self.handleLogin)
-    #     self.loginBox = QtWidgets.QGroupBox("Group 1")
-    #     Box = QtWidgets.QVBoxLayout(self)
-    #     Box.addWidget(QtWidgets.QLabel("Name"))
-    #     Box.addWidget(self.Name)
-    #     Box.addWidget(QtWidgets.QLabel("Password"))
-    #     Box.addWidget(self.Password)
-    #     Box.addWidget(QtWidgets.QLabel(""))
-    #     Box.addWidget(self.buttonLogin)
-    #     self.loginBox.setLayout(Box)
-
-    #     loginLayout = QtWidgets.QGridLayout()
-    #     loginLayout.addWidget(self.loginBox, 1, 0)
-    #     self.setLayout(loginLayout)
-
     # def handleLogin(self):
     #     if (self.Name.text() == 'foo' and
     #             self.Password.text() == 'bar'):
@@ -117,8 +102,3 @@ if __name__ == '__main__':
     #     else:
     #         QtWidgets.QMessageBox.warning(
     #             self, 'Error', 'Bad user or password')
-    
-    # def handleCreateAcc(self): 
-    #     print("create account")
-
-'''

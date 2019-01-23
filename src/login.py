@@ -1,20 +1,21 @@
+import os
 from PyQt5 import QtWidgets, QtGui
 from PyQt5 import QtCore
 from PyQt5.QtCore import QDateTime, Qt, QTimer
 from accountHandle import createUser
 
-class WindowMain(QtWidgets.QMainWindow):
+class WindowMain(QtWidgets.QWidget):
     def __init__(self, parent=None):
         super(WindowMain, self).__init__(parent)
         self.setWindowTitle("fpena2")
         self.InitwelcomeScreen()
     
     def InitwelcomeScreen(self):
-        self.mainWidget = QtWidgets.QWidget()               
-        mainWidgetlayout = QtWidgets.QVBoxLayout(self.mainWidget)
+        mainWidgetlayout = QtWidgets.QVBoxLayout(self)
 
         welcomeScreen = QtWidgets.QLabel(self)
-        photo = QtGui.QPixmap("logo.png")
+        logoPath = os.path.join(os.path.dirname(os.getcwd()), "media", "logo.png")
+        photo = QtGui.QPixmap(logoPath)
         welcomeScreen.setPixmap(photo)
         self.setFixedSize(WIDTH, HEIGHT)
 
@@ -27,7 +28,7 @@ class WindowMain(QtWidgets.QMainWindow):
         self.buttonCreateAcc.clicked.connect(self.getCreateAccountWindow)
         
         mainWidgetlayout.addWidget(welcomeScreen)
-        self.show()
+        #self.show()
 
     def getCreateAccountWindow(self):
        self.obj = windowCreateAccount()
@@ -75,20 +76,24 @@ class windowCreateAccount(QtWidgets.QWidget):
 
     def submitHandler(self):
         dataPacket = (self.nameID.text(), self.password.text(),str(self.comboBox.currentText()))
-
         handle = createUser()
         handle.pushDatabase(dataPacket)
-
 
 
 if __name__ == '__main__':
     import sys
     HEIGHT = 600
     WIDTH = 800
+    # GTK 3 will force a warning:
+    # (QApplication: invalid style override passed, ignoring it.)
+    QtWidgets.QApplication.setDesktopSettingsAware(False)
+    # This flag does not fix the issue under Pantheon (eOS)
     app = QtWidgets.QApplication(sys.argv)
     main = WindowMain()
     main.show()
     sys.exit(app.exec_())
+
+
 
     # if login.exec_() == QtWidgets.QDialog.Accepted:
     #     window = Window()

@@ -1,4 +1,5 @@
 import sqlite3
+from pathlib import Path
 import os
 
 def initSQLpath():
@@ -9,42 +10,52 @@ def initSQLpath():
     return os.path.join(path, dataBaseName)
 
 
-class createUser():
+class userTools():
     def __init__(self, parent = None):
         self.dataBase = initSQLpath()
         self.connection = None
-        self.openConnection()
     
     def openConnection(self):
         try:
             self.connection = sqlite3.connect(self.dataBase)
         except Error as exception:
             print(exception)
+    
+    def createTable(self):
+        self.connection.execute(
+            """CREATE TABLE UserBase (Name TEXT, Password TEXT, Organization TEXT);"""
+            )
 
     def closeConncection(self):
         self.connection.commit()
         self.connection.close()
     
-    def pushDatabase(self, dataPacket):
-        userID, password, organization = dataPacket
 
-        # cursor = self.connection.cursor()
-        # cursor.execute("SELECT count(*) FROM sqlite_master WHERE type='table' AND name='{UserBase}';")
-        # index = cursor.fetchall()[0][0]
+    def pushNewUser(self, dataPacket):
+        self.openConnection()
 
-        # print(index)
-        # if index == 0:
-        #     self.connection.execute(
-        #         """CREATE TABLE UserBase (
-        #             Name TEXT PRIMARY KEY NOT NULL, 
-        #             Password TEXT NOT NULL,
-        #             Organization TEXT NOT NULL
-        #         );"""
-        #     )
-        # else:
-        #     print("table present")
+        try:
+            dbAbsPath = Path(self.dataBase).resolve(strict=True)
+        except FileNotFoundError:
+            self.openConnection()
+            self.createTable()
+        
+        cursor = self.connection.cursor() 
+        for row in cursor.execute('SELECT Name FROM UserBase'):
+            if dataPacket[0] in row : 
+                print("User is already registered")
+                return 1; 
+
+        sqlEntry = """INSERT INTO UserBase VALUES (?, ?, ?)"""
+        cursor.execute(sqlEntry, dataPacket)
+        self.closeConncection()
 
 
-
-    def accessDatabase(self, passToSearch):
+    def loginUser(self, logInfo):
         pass 
+
+
+if __name__ == '__main__':
+    c = userTools()
+    val = ("Mono", "444", "br")
+    c.pushNewUser(val)

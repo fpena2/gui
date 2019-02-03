@@ -2,7 +2,7 @@ import os
 from PyQt5 import QtWidgets, QtGui
 from PyQt5 import QtCore
 from PyQt5.QtCore import QDateTime, Qt, QTimer
-from accountHandle import createUser
+from accountHandle import userTools
 
 class WindowMain(QtWidgets.QWidget):
     def __init__(self, parent=None):
@@ -19,7 +19,6 @@ class WindowMain(QtWidgets.QWidget):
         welcomeScreen.setPixmap(photo)
         self.setFixedSize(WIDTH, HEIGHT)
 
-        #might have to add these to the mainwidgetlayout
         self.buttonLogin = QtWidgets.QPushButton('Login', self)
         self.buttonLogin.move(360,535)
         self.buttonLogin.clicked.connect(self.getLoginWindow)
@@ -28,14 +27,13 @@ class WindowMain(QtWidgets.QWidget):
         self.buttonCreateAcc.clicked.connect(self.getCreateAccountWindow)
         
         mainWidgetlayout.addWidget(welcomeScreen)
-        #self.show()
+ 
 
     def getCreateAccountWindow(self):
        self.obj = windowCreateAccount()
 
-
     def getLoginWindow(self):
-        pass
+        self.obj = windowLogin()
 
 class windowCreateAccount(QtWidgets.QWidget):
     def __init__(self, parent= None):
@@ -76,9 +74,43 @@ class windowCreateAccount(QtWidgets.QWidget):
 
     def submitHandler(self):
         dataPacket = (self.nameID.text(), self.password.text(),str(self.comboBox.currentText()))
-        handle = createUser()
-        handle.pushDatabase(dataPacket)
+        handle = userTools()
+        # returns flag if user already exist
+        newUser = handle.pushNewUser(dataPacket)
+        if newUser: 
+            QtWidgets.QMessageBox.warning(self, "Attention", "This user already exist.")
 
+class windowLogin(QtWidgets.QWidget):
+    def __init__(self, parent = None):
+        super(windowLogin, self).__init__(parent)
+        self.setWindowTitle("Log In")
+        # Accessed by multiple functions
+        self.nameID = QtWidgets.QLineEdit()
+        self.password = QtWidgets.QLineEdit()
+        self.InitLogin()
+    
+    def InitLogin(self):
+        mainWidgetlayout = QtWidgets.QGridLayout()  
+        mainWidgetlayout.addWidget(QtWidgets.QLabel("ID: "), 1 , 0)
+        mainWidgetlayout.addWidget(self.nameID, 1,1)
+        mainWidgetlayout.addWidget(QtWidgets.QLabel("Password: "), 2 , 0)
+        mainWidgetlayout.addWidget(self.password, 2,1)
+        buttonSubmit = QtWidgets.QPushButton('Submit', self)
+        buttonSubmit.clicked.connect(self.submitHandler)
+        buttonCancel = QtWidgets.QPushButton('Cancel', self)
+        buttonCancel.clicked.connect(self.close)
+        mainWidgetlayout.addWidget(buttonCancel, 4, 0)
+        mainWidgetlayout.addWidget(buttonSubmit, 4, 1)
+        self.setLayout(mainWidgetlayout)
+        self.show()
+    
+    def submitHandler(self):
+        dataPacket = (self.nameID.text(), self.password.text())
+        handle = UserTools()
+        
+
+
+            
 
 if __name__ == '__main__':
     import sys

@@ -29,7 +29,7 @@ class userTools():
     def closeConncection(self):
         self.connection.commit()
         self.connection.close()
-    
+
 
     def pushNewUser(self, dataPacket):
         self.openConnection()
@@ -43,8 +43,8 @@ class userTools():
         cursor = self.connection.cursor() 
         for row in cursor.execute('SELECT Name FROM UserBase'):
             if dataPacket[0] in row : 
-                print("User is already registered")
-                return 1; 
+                #print("User is already registered")
+                return 0 
 
         sqlEntry = """INSERT INTO UserBase VALUES (?, ?, ?)"""
         cursor.execute(sqlEntry, dataPacket)
@@ -52,8 +52,13 @@ class userTools():
 
 
     def loginUser(self, logInfo):
-        pass 
+        self.openConnection()
+        cursor = self.connection.cursor() 
+        for row in cursor.execute('SELECT * FROM UserBase'):
+            if (logInfo[0] in row) and (logInfo[1] == row[1]):
+                return 1
 
+                
 
 if __name__ == '__main__':
     c = userTools()

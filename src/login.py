@@ -28,7 +28,6 @@ class WindowMain(QtWidgets.QWidget):
         
         mainWidgetlayout.addWidget(welcomeScreen)
  
-
     def getCreateAccountWindow(self):
        self.obj = windowCreateAccount()
 
@@ -77,7 +76,7 @@ class windowCreateAccount(QtWidgets.QWidget):
         handle = userTools()
         # returns flag if user already exist
         newUser = handle.pushNewUser(dataPacket)
-        if newUser: 
+        if newUser == 0: 
             QtWidgets.QMessageBox.warning(self, "Attention", "This user already exist.")
 
 class windowLogin(QtWidgets.QWidget):
@@ -106,11 +105,15 @@ class windowLogin(QtWidgets.QWidget):
     
     def submitHandler(self):
         dataPacket = (self.nameID.text(), self.password.text())
-        handle = UserTools()
+        handle = userTools()
+        loginStatus = handle.loginUser(dataPacket)
+        if loginStatus != 1:
+            QtWidgets.QMessageBox.warning(self, "Attention", "Wrong user name or password")
+        else: 
+            # Go to another main window 
+            self.close()
+
         
-
-
-            
 
 if __name__ == '__main__':
     import sys

@@ -1,0 +1,4 @@
+*.png
+.vscode
+./media/
+*.pyc

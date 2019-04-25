@@ -97,6 +97,7 @@ class windowLogin(QtWidgets.QWidget):
         # Accessed by multiple functions
         self.nameID = QtWidgets.QLineEdit()
         self.password = QtWidgets.QLineEdit()
+        self.password.setEchoMode(QtWidgets.QLineEdit.Password)
         self.InitLogin()
 
     def InitLogin(self):

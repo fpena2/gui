@@ -14,6 +14,8 @@ To run, simply run login.py in your terminal
 $ python3 login.py
 ```
 
+![](./storage/demo.webm)
+
 -----
 ### Features 
 * Enables user account creation and login.

@@ -17,10 +17,11 @@ class userTools():
         self.connection = None
 
     def openConnection(self):
+        self.connection = sqlite3.connect(self.dataBase)
         try:
-            self.connection = sqlite3.connect(self.dataBase)
-        except Error as exception:
-            print(exception)
+            self.createTable()
+        except sqlite3.OperationalError as e:
+            pass
 
     def createTable(self):
         self.connection.execute(
@@ -33,12 +34,6 @@ class userTools():
 
     def pushNewUser(self, dataPacket):
         self.openConnection()
-
-        try:
-            dbAbsPath = Path(self.dataBase).resolve(strict=True)
-        except FileNotFoundError:
-            self.openConnection()
-            self.createTable()
 
         cursor = self.connection.cursor()
         for row in cursor.execute('SELECT Name FROM UserBase'):

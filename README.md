@@ -14,7 +14,7 @@ To run, simply run login.py in your terminal
 $ python3 login.py
 ```
 
-![](./storage/demo.mp4)
+![](/storage/demo.gif)
 
 -----
 ### Features 

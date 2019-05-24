@@ -1,11 +1,9 @@
 import os
-from PyQt5 import QtWidgets, QtGui
-from PyQt5 import QtCore
-from PyQt5.QtCore import QDateTime, Qt, QTimer
+from PyQt5 import QtWidgets, QtGui, QtCore
 from accountHandle import userTools
 
 
-class WindowMain(QtWidgets.QWidget):
+class WindowMain(QtWidgets.QMainWindow):
     def __init__(self, parent=None):
         super(WindowMain, self).__init__(parent)
         self.setWindowTitle("fpena2")
@@ -37,10 +35,12 @@ class WindowMain(QtWidgets.QWidget):
         self.obj = windowLogin()
 
 
-class windowCreateAccount(QtWidgets.QWidget):
-    def __init__(self, parent=None):
+class windowCreateAccount(QtWidgets.QDialog):
+    def __init__(self, parent=None):       
         super(windowCreateAccount, self).__init__(parent)
         self.setWindowTitle("Create Account")
+        # Prevents manipulation of WindowMain 
+        self.setModal(True)
 
         # Accessed by multiple functions
         self.nameID = QtWidgets.QLineEdit()
@@ -90,10 +90,13 @@ class windowCreateAccount(QtWidgets.QWidget):
             self.close()
 
 
-class windowLogin(QtWidgets.QWidget):
+class windowLogin(QtWidgets.QDialog):
     def __init__(self, parent=None):
         super(windowLogin, self).__init__(parent)
         self.setWindowTitle("Log In")
+        # Prevents manipulation of WindowMain 
+        self.setModal(True)
+
         # Accessed by multiple functions
         self.nameID = QtWidgets.QLineEdit()
         self.password = QtWidgets.QLineEdit()
@@ -153,6 +156,7 @@ if __name__ == '__main__':
     QtWidgets.QApplication.setDesktopSettingsAware(False)
     # This flag does not fix the issue under Pantheon (eOS)
     app = QtWidgets.QApplication(sys.argv)
+    # app.setQuitOnLastWindowClosed(True)
     main = WindowMain()
     main.show()
     sys.exit(app.exec_())
